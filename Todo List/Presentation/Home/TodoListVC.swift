@@ -1,6 +1,6 @@
 import UIKit
 
-class HomeViewController: UIViewController {
+class TodoListVC: UIViewController {
 
     private lazy var headerText = {
         let header = UILabel()
@@ -11,9 +11,8 @@ class HomeViewController: UIViewController {
     
     private lazy var todayListTitle = {
         let title = UILabel()
-        title.textColor = .white
         title.text = "Today's List"
-        title.font = if let titleFont = UIFont(name: "Roboto-Medium", size: 22) { titleFont } else { title.font.withSize(22) }
+        title.setAsSubHeader()
         return title
     }()
     
@@ -21,19 +20,16 @@ class HomeViewController: UIViewController {
         let seeAll = UIButton()
         seeAll.setTitleColor(.purple, for: .normal)
         seeAll.setTitle("See All", for: .normal)
-        seeAll.titleLabel?.font = if let titleFont = UIFont(name: "Roboto-Regular", size: 18) { titleFont } else { seeAll.titleLabel?.font.withSize(18)
+        seeAll.titleLabel?.font = if let titleFont = UIFont(name: "Roboto-Regular", size: 16) { titleFont } else { seeAll.titleLabel?.font.withSize(16)
         }
-        for f in UIFont.familyNames {
-            for n in UIFont.fontNames(forFamilyName: f) {
-                print(n)
-            }
-        }
+        seeAll.addTarget(self, action: #selector(goToCreateTaskVC), for: .touchUpInside)
         return seeAll
     }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .black
+        tableView.register(TodoItem.self, forCellReuseIdentifier: "Todo Item")
         return tableView
     }()
     
@@ -51,9 +47,13 @@ class HomeViewController: UIViewController {
         setupSeeAllButton()
         setupTodoListView()
     }
+    
+    @objc private func goToCreateTaskVC() {
+        navigationController?.pushViewController(CreateTaskVC(), animated: true)
+    }
 }
 
-extension HomeViewController {
+extension TodoListVC: UITableViewDataSource {
     private func addAllViews() {
         view.addSubview(headerText)
         view.addSubview(todayListTitle)
@@ -97,4 +97,14 @@ extension HomeViewController {
             tableView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return TodoItem()
+    }
 }
+
+

@@ -7,4 +7,9 @@ extension UILabel {
         numberOfLines = 0
         lineBreakMode = .byWordWrapping
     }
+    
+    func setAsSubHeader() {
+        textColor = .white
+        font = if let titleFont = UIFont(name: "Roboto-Medium", size: 22) { titleFont } else { font.withSize(22) }
+    }
 }
