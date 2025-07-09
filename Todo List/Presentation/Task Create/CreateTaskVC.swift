@@ -2,6 +2,17 @@ import UIKit
 
 class CreateTaskVC: UIViewController {
     
+    private let onTaskCreated: ((TaskModel) -> Void)
+    
+    init(onTaskCreated: @escaping (TaskModel) -> Void) {
+        self.onTaskCreated = onTaskCreated
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("Belum dipanggil")
+    }
+    
     private lazy var titleTextField = {
         let textField = UITextField()
         textField.placeholder = "Name"
@@ -38,12 +49,18 @@ class CreateTaskVC: UIViewController {
     }
     
     private func setupViews() {
-                
         
     }
     
     private func createTask() {
         
+    }
+    
+    static func newViewController(
+        onNewTaskCreated: @escaping (TaskModel) -> Void
+    ) -> CreateTaskVC {
+        let viewController = CreateTaskVC(onTaskCreated: onNewTaskCreated)
+        return viewController
     }
 }
 

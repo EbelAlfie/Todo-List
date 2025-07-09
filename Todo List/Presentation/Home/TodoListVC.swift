@@ -1,6 +1,8 @@
 import UIKit
 
 class TodoListVC: UIViewController {
+    
+    private let tasksList: [TaskModel] = []
 
     private lazy var headerText = {
         let header = UILabel()
@@ -19,7 +21,7 @@ class TodoListVC: UIViewController {
     private lazy var seeAllButton = {
         let seeAll = UIButton()
         seeAll.setTitleColor(.purple, for: .normal)
-        seeAll.setTitle("See All", for: .normal)
+        seeAll.setTitle("Add task", for: .normal)
         seeAll.titleLabel?.font = if let titleFont = UIFont(name: "Roboto-Regular", size: 16) { titleFont } else { seeAll.titleLabel?.font.withSize(16)
         }
         seeAll.addTarget(self, action: #selector(goToCreateTaskVC), for: .touchUpInside)
@@ -29,7 +31,7 @@ class TodoListVC: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .black
-        tableView.register(TodoItem.self, forCellReuseIdentifier: "Todo Item")
+        tableView.register(TodoItem.self, forCellReuseIdentifier: TodoItem.identifier)
         return tableView
     }()
     
@@ -49,10 +51,14 @@ class TodoListVC: UIViewController {
     }
     
     @objc private func goToCreateTaskVC() {
-        navigationController?.pushViewController(CreateTaskVC(), animated: true)
+        let createTaskVc = CreateTaskVC.newViewController { taskModel in
+            print("ASDASD")
+        }
+        navigationController?.pushViewController(createTaskVc, animated: true)
     }
 }
 
+//UI Manager
 extension TodoListVC: UITableViewDataSource {
     private func addAllViews() {
         view.addSubview(headerText)
@@ -103,7 +109,11 @@ extension TodoListVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return TodoItem()
+        let cell = tableView.dequeueReusableCell(withIdentifier: TodoItem.identifier, for: indexPath)
+        if let todoCell = cell as? TodoItem {
+//            todoCell.setupView(task:)
+        }
+        return cell
     }
 }
 
