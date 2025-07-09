@@ -19,7 +19,8 @@ class TodoItem: UITableViewCell, BaseCell {
     }()
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        print("Story board meresahkan")
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

@@ -37,7 +37,6 @@ class TodoListVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Todo"
         view.backgroundColor = .black
         setupViews()
     }

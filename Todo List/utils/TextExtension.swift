@@ -13,3 +13,11 @@ extension UILabel {
         font = if let titleFont = UIFont(name: "Roboto-Medium", size: 22) { titleFont } else { font.withSize(22) }
     }
 }
+
+extension UITextField {
+    func setAsDefaultTextField() {
+        layer.cornerRadius = 10
+        backgroundColor = UIColor(red: 24, green: 24, blue: 24, alpha: 1)
+        textColor = .white
+    }
+}

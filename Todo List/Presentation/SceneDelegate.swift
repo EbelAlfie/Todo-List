@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .blue
-        window?.rootViewController = TodoListVC()
+        window?.rootViewController = UINavigationController(rootViewController: TodoListVC()) 
         window?.makeKeyAndVisible()
     }
 
