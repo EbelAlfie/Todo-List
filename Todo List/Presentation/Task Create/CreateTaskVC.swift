@@ -6,33 +6,39 @@ class CreateTaskVC: UIViewController {
     
     private lazy var titleTextField = {
         let textField = BaseTextField()
-        textField.placeholder = "Name"
+        textField.attributedPlaceholder = NSAttributedString(string: "Name", attributes: [
+            NSAttributedString.Key.foregroundColor: UIColor.white
+        ])
         textField.setAsDefaultTextField()
+        textField.setPadding(newPadding: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
         return textField
     }()
     
     private lazy var descriptionTextField = {
         let textField = BaseTextField()
-        textField.placeholder = "Description"
+        textField.attributedPlaceholder = NSAttributedString(string: "Description", attributes: [
+            NSAttributedString.Key.foregroundColor: UIColor.white
+        ])
         textField.setAsDefaultTextField()
+        textField.setPadding(newPadding: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
         return textField
     }()
     
     private lazy var scheduleLabel = {
         let label = UILabel()
-        label.text = "Schedule"
+        label.text = "Your Task"
         label.setAsSubHeader()
         return label
     }()
     
     private lazy var newTaskButton = {
-        let button = UIButton()
-        button.setTitle("Create Task", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .purple
-        button.layer.cornerRadius = 10
+        var config = UIButton.Configuration.filled()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
+        config.title = "Create Task"
+        config.baseBackgroundColor = .purple
+        let button = UIButton(configuration: config)
+        button.layer.cornerRadius = 20
         button.addTarget(self, action: #selector(createTask), for: .touchUpInside)
-        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         return button
     }()
     
@@ -69,7 +75,19 @@ class CreateTaskVC: UIViewController {
     }
     
     @objc private func createTask() {
-//        onTaskCreated()
+        guard let name = titleTextField.text, !name.isEmpty else {
+            titleTextField.setAsError()
+            return
+        }
+        
+        guard let desc = descriptionTextField.text, !desc.isEmpty else {
+            descriptionTextField.setAsError()
+            return
+        }
+        
+        let task = TaskModel(id: "ASDASD", title: name, description: desc, priority: Priority.High)
+        onTaskCreated(task)
+        
         navigationController?.popViewController(animated: true)
     }
     

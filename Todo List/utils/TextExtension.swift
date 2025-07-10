@@ -17,7 +17,12 @@ extension UILabel {
 extension UITextField {
     func setAsDefaultTextField() {
         layer.cornerRadius = 10
-        backgroundColor = UIColor(red: 24, green: 24, blue: 24, alpha: 1)
+        backgroundColor = Gray
         textColor = .white
+    }
+    
+    func setAsError() {
+        layer.borderColor = UIColor.red.cgColor
+        layer.borderWidth = 1
     }
 }

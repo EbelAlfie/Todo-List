@@ -40,6 +40,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		DC8D6EF12E1FB26A003F943C /* Resource */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		DCA138722E1D2DED001A53E2 /* Todo List */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -93,6 +98,7 @@
 		DCA138672E1D2DED001A53E2 = {
 			isa = PBXGroup;
 			children = (
+				DC8D6EF12E1FB26A003F943C /* Resource */,
 				DCB80B902E1D6D6A00AA6F02 /* Font */,
 				DCA138722E1D2DED001A53E2 /* Todo List */,
 				DCA138892E1D2DF0001A53E2 /* Todo ListTests */,
@@ -127,6 +133,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				DC8D6EF12E1FB26A003F943C /* Resource */,
 				DCA138722E1D2DED001A53E2 /* Todo List */,
 				DCB80B902E1D6D6A00AA6F02 /* Font */,
 			);

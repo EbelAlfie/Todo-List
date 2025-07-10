@@ -2,7 +2,7 @@ import UIKit
 
 class TodoListVC: UIViewController {
     
-    private let tasksList: [TaskModel] = []
+    private var tasksList: [TaskModel] = []
 
     private lazy var headerText = {
         let header = UILabel()
@@ -32,6 +32,10 @@ class TodoListVC: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .black
         tableView.register(TodoItem.self, forCellReuseIdentifier: TodoItem.identifier)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableView.automaticDimension
         return tableView
     }()
     
@@ -51,14 +55,15 @@ class TodoListVC: UIViewController {
     
     @objc private func goToCreateTaskVC() {
         let createTaskVc = CreateTaskVC.newViewController { taskModel in
-            print("ASDASD")
+            self.tasksList.append(taskModel)
+            self.tableView.reloadData()
         }
         navigationController?.pushViewController(createTaskVc, animated: true)
     }
 }
 
 //UI Manager
-extension TodoListVC: UITableViewDataSource {
+extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
     private func addAllViews() {
         view.addSubview(headerText)
         view.addSubview(todayListTitle)
@@ -98,19 +103,19 @@ extension TodoListVC: UITableViewDataSource {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: todayListTitle.bottomAnchor, constant: 12),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(lessThanOrEqualTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
+            tableView.leadingAnchor.constraint(lessThanOrEqualTo: view.leadingAnchor, constant: 20),
+            tableView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
         ])
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return tasksList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TodoItem.identifier, for: indexPath)
         if let todoCell = cell as? TodoItem {
-//            todoCell.setupView(task:)
+            todoCell.bindData(data: tasksList[indexPath.item])
         }
         return cell
     }
