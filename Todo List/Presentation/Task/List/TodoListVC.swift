@@ -54,16 +54,36 @@ class TodoListVC: UIViewController {
     }
     
     @objc private func goToCreateTaskVC() {
-        let createTaskVc = CreateTaskVC.newViewController { taskModel in
-            self.tasksList.append(taskModel)
-            self.tableView.reloadData()
-        }
+        let createTaskVc = CreateTaskVC()
+        createTaskVc.delegate = self
         navigationController?.pushViewController(createTaskVc, animated: true)
     }
 }
 
-//UI Manager
 extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tasksList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: TodoItem.identifier, for: indexPath)
+        if let todoCell = cell as? TodoItem {
+            todoCell.bindData(data: tasksList[indexPath.item])
+        }
+        return cell
+    }
+}
+
+extension TodoListVC: CreateTaskProtocol {
+    func onCreatedTask(task: TaskModel) {
+        self.tasksList.append(task)
+        self.tableView.reloadData()
+    }
+}
+
+//UI Manager
+extension TodoListVC {
     private func addAllViews() {
         view.addSubview(headerText)
         view.addSubview(todayListTitle)
@@ -108,17 +128,4 @@ extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
         ])
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasksList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TodoItem.identifier, for: indexPath)
-        if let todoCell = cell as? TodoItem {
-            todoCell.bindData(data: tasksList[indexPath.item])
-        }
-        return cell
-    }
 }
-
-

@@ -63,11 +63,6 @@
 			path = "Todo ListUITests";
 			sourceTree = "<group>";
 		};
-		DCB80B902E1D6D6A00AA6F02 /* Font */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Font;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				DC8D6EF12E1FB26A003F943C /* Resource */,
-				DCB80B902E1D6D6A00AA6F02 /* Font */,
 				DCA138722E1D2DED001A53E2 /* Todo List */,
 				DCA138892E1D2DF0001A53E2 /* Todo ListTests */,
 				DCA138932E1D2DF0001A53E2 /* Todo ListUITests */,
@@ -135,7 +129,6 @@
 			fileSystemSynchronizedGroups = (
 				DC8D6EF12E1FB26A003F943C /* Resource */,
 				DCA138722E1D2DED001A53E2 /* Todo List */,
-				DCB80B902E1D6D6A00AA6F02 /* Font */,
 			);
 			name = "Todo List";
 			packageProductDependencies = (

@@ -1,8 +1,12 @@
 import UIKit
 
+protocol CreateTaskProtocol: AnyObject {
+    func onCreatedTask(task: TaskModel)
+}
+
 class CreateTaskVC: UIViewController {
     
-    private let onTaskCreated: ((TaskModel) -> Void)
+    weak var delegate: CreateTaskProtocol?
     
     private lazy var titleTextField = {
         let textField = BaseTextField()
@@ -57,8 +61,11 @@ class CreateTaskVC: UIViewController {
         setupViews()
     }
     
-    init(onTaskCreated: @escaping (TaskModel) -> Void) {
-        self.onTaskCreated = onTaskCreated
+//    init(onTaskCreated: @escaping (TaskModel) -> Void) {
+//        self.onTaskCreated = onTaskCreated
+//        super.init(nibName: nil, bundle: nil)
+//    }
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -85,17 +92,10 @@ class CreateTaskVC: UIViewController {
             return
         }
         
-        let task = TaskModel(id: "ASDASD", title: name, description: desc, priority: Priority.High)
-        onTaskCreated(task)
+        let task = TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High)
+        delegate?.onCreatedTask(task: task)
         
         navigationController?.popViewController(animated: true)
-    }
-    
-    static func newViewController(
-        onNewTaskCreated: @escaping (TaskModel) -> Void
-    ) -> CreateTaskVC {
-        let viewController = CreateTaskVC(onTaskCreated: onNewTaskCreated)
-        return viewController
     }
 }
 
@@ -129,6 +129,7 @@ extension CreateTaskVC {
     private func setupDescField() {
         descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
+            descriptionTextField.heightAnchor.constraint(equalToConstant: 100),
             descriptionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 10),
             descriptionTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             descriptionTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),

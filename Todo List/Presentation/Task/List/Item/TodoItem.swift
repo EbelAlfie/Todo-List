@@ -3,6 +3,8 @@ import UIKit
 class TodoItem: UITableViewCell, BaseCell {
     static var identifier: String = "Todo Item"
     
+    var callback: TaskItemCallback?
+    
     private lazy var rootView = {
         let root = UIView()
         root.clipsToBounds = true
@@ -28,6 +30,11 @@ class TodoItem: UITableViewCell, BaseCell {
         return textView
     }()
     
+    private lazy var deleteIcon = {
+        let icon = UIImage(named: "DeleteIcon")
+        return icon
+    }()
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         print("Story board meresahkan")
@@ -36,6 +43,9 @@ class TodoItem: UITableViewCell, BaseCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .clear
+        
         contentView.addSubview(rootView)
         
         rootView.addSubview(priorityHighlight)
