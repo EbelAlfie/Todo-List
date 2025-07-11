@@ -136,9 +136,7 @@ extension CreateTaskVC {
     }
     
     private func setupDescField() {
-        descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
-        let size = descriptionTextField.sizeThatFits(CGSize(width: descriptionTextField.frame.width, height: .infinity))
-        
+        descriptionTextField.translatesAutoresizingMaskIntoConstraints = false        
         NSLayoutConstraint.activate([
             descriptionTextField.heightAnchor.constraint(equalToConstant: 100),
             descriptionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 10),

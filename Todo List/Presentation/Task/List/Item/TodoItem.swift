@@ -51,6 +51,38 @@ class TodoItem: UITableViewCell, BaseCell {
         
         contentView.addSubview(rootView)
         
+        setupViews()
+    }
+    
+    func bindData(data: TaskModel) {
+        self.item = data
+        
+        deleteIcon.addTarget(self, action: #selector(onDelete), for: .touchUpInside)
+        
+        rootView.addTarget(self, action: #selector(onClick), for: .touchUpInside)
+        
+        priorityHighlight.backgroundColor = switch(data.priority) {
+            case .High: UIColor(red: 250, green: 203, blue: 186, alpha: 1)
+            case .Medium: UIColor(red: 215, green: 240, blue: 255, alpha: 1)
+            case .Low: UIColor(red: 250, green: 217, blue: 255, alpha: 1)
+        }
+        taskName.text = data.title
+        taskDescription.text = data.description
+    }
+    
+    @objc private func onDelete() {
+        guard let item = self.item else { return }
+        callback?.onDelete(task: item)
+    }
+    
+    @objc private func onClick() {
+        guard let item = self.item else { return }
+        callback?.onClicked(task: item)
+    }
+}
+
+extension TodoItem {
+    private func setupViews() {
         rootView.addSubview(deleteIcon)
         rootView.addSubview(priorityHighlight)
         rootView.addSubview(taskName)
@@ -89,31 +121,5 @@ class TodoItem: UITableViewCell, BaseCell {
             taskDescription.bottomAnchor.constraint(equalTo: rootView.bottomAnchor, constant: -15),
             taskDescription.trailingAnchor.constraint(lessThanOrEqualTo: taskName.trailingAnchor)
         ])
-    }
-    
-    func bindData(data: TaskModel) {
-        self.item = data
-        
-        deleteIcon.addTarget(self, action: #selector(onDelete), for: .touchUpInside)
-        
-        rootView.addTarget(self, action: #selector(onClick), for: .touchUpInside)
-        
-        priorityHighlight.backgroundColor = switch(data.priority) {
-            case .High: UIColor(red: 250, green: 203, blue: 186, alpha: 1)
-            case .Medium: UIColor(red: 215, green: 240, blue: 255, alpha: 1)
-            case .Low: UIColor(red: 250, green: 217, blue: 255, alpha: 1)
-        }
-        taskName.text = data.title
-        taskDescription.text = data.description
-    }
-    
-    @objc private func onDelete() {
-        guard let item = self.item else { return }
-        callback?.onDelete(task: item)
-    }
-    
-    @objc private func onClick() {
-        guard let item = self.item else { return }
-        callback?.onClicked(task: item)
     }
 }

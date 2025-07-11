@@ -39,6 +39,20 @@ class TodoListVC: UIViewController {
         return tableView
     }()
     
+    private lazy var emptyText = {
+        let emptyLabel = UILabel()
+        emptyLabel.text = "You have no task"
+        emptyLabel.textColor = .lightGray
+        return emptyLabel
+    }()
+    
+    private lazy var emptyContent = {
+        let stackView = UIStackView(arrangedSubviews: [emptyText])
+        stackView.alignment = .center
+        stackView.axis = .vertical
+        return stackView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -51,6 +65,7 @@ class TodoListVC: UIViewController {
         setupTodoListTitle()
         setupAddTaskButton()
         setupTodoListView()
+        setupEmptyContent()
     }
     
     private func goToCreateTaskVC(task: TaskModel?) {
@@ -89,7 +104,7 @@ extension TodoListVC: CreateTaskProtocol, TodoItemCallback {
             self.tasksList.append(task)
         }
         
-        updateHeaderTitleText()
+        updateView()
         
         self.tableView.reloadData()
     }
@@ -97,7 +112,7 @@ extension TodoListVC: CreateTaskProtocol, TodoItemCallback {
     func onDelete(task: TaskModel) {
         guard let position = tasksList.firstIndex(where: { item in item.id == task.id }) else { return }
         self.tasksList.remove(at: position)
-        updateHeaderTitleText()
+        updateView()
         self.tableView.reloadData()
     }
     
@@ -120,6 +135,21 @@ extension TodoListVC {
         view.addSubview(todayListTitle)
         view.addSubview(addTaskButton)
         view.addSubview(tableView)
+        view.addSubview(emptyContent) //Harusnya ga boleh
+    }
+    
+    private func updateView() {
+        updateHeaderTitleText()
+        updateItemState()
+    }
+    
+    private func updateHeaderTitleText() {
+        headerText.text = "You have got \(self.tasksList.count) tasks today to complete"
+    }
+    
+    private func updateItemState() {
+        emptyContent.isHidden = tasksList.count > 0
+        tableView.isHidden = tasksList.count <= 0
     }
     
     private func setupHeaderTitle() {
@@ -130,11 +160,7 @@ extension TodoListVC {
             headerText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
-    
-    private func updateHeaderTitleText() {
-        headerText.text = "You have got \(self.tasksList.count) tasks today to complete"
-    }
-    
+        
     private func setupTodoListTitle() {
         todayListTitle.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -157,9 +183,17 @@ extension TodoListVC {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: todayListTitle.bottomAnchor, constant: 12),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(lessThanOrEqualTo: view.leadingAnchor, constant: 20),
             tableView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
+        ])
+    }
+    
+    private func setupEmptyContent() {
+        emptyContent.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            emptyContent.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyContent.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
 }
