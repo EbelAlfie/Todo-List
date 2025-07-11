@@ -66,6 +66,6 @@ class BaseTextView: UITextView, UITextViewDelegate {
 
     func textViewDidChange(_ textView: UITextView) {
         placeholderLabel.isHidden = !textView.text.isEmpty
+        layer.borderColor = .none
     }
 }
-

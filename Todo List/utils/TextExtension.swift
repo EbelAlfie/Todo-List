@@ -22,7 +22,7 @@ extension UITextField {
     
     func setAsError() {
         layer.borderColor = UIColor.red.cgColor
-        layer.borderWidth = 3
+        layer.borderWidth = 2
     }
 }
 
@@ -35,6 +35,6 @@ extension UITextView {
     
     func setAsError() {
         layer.borderColor = UIColor.red.cgColor
-        layer.borderWidth = 3
+        layer.borderWidth = 2
     }
 }

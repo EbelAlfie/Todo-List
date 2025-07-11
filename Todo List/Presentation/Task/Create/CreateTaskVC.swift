@@ -28,6 +28,7 @@ class CreateTaskVC: UIViewController {
         if isEditMode() {
             textField.text = taskEdit?.title
         }
+        textField.addTarget(self, action: #selector(onTextChanged), for: .editingChanged)
         return textField
     }()
     
@@ -105,6 +106,10 @@ class CreateTaskVC: UIViewController {
         delegate?.onCreatedTask(task: task)
         
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func onTextChanged() {
+        titleTextField.layer.borderColor = .none
     }
 }
 
