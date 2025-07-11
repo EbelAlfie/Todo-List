@@ -65,8 +65,8 @@ class TodoItem: UITableViewCell, BaseCell {
         NSLayoutConstraint.activate([
             rootView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             rootView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            rootView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            rootView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            rootView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            rootView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             
             deleteIcon.widthAnchor.constraint(equalToConstant: 26),
             deleteIcon.heightAnchor.constraint(equalToConstant: 26),

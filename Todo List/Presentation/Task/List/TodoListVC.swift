@@ -8,6 +8,8 @@ class TodoListVC: UIViewController {
         let header = UILabel()
         header.textColor = .white
         header.setAsHeader()
+        header.text = "You have got 0 tasks today to complete"
+
         return header
     }()
     
@@ -34,7 +36,6 @@ class TodoListVC: UIViewController {
         tableView.register(TodoItem.self, forCellReuseIdentifier: TodoItem.identifier)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         return tableView
     }()
     
@@ -88,12 +89,15 @@ extension TodoListVC: CreateTaskProtocol, TodoItemCallback {
             self.tasksList.append(task)
         }
         
+        updateHeaderTitleText()
+        
         self.tableView.reloadData()
     }
     
     func onDelete(task: TaskModel) {
         guard let position = tasksList.firstIndex(where: { item in item.id == task.id }) else { return }
         self.tasksList.remove(at: position)
+        updateHeaderTitleText()
         self.tableView.reloadData()
     }
     
@@ -125,6 +129,10 @@ extension TodoListVC {
             headerText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             headerText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+    }
+    
+    private func updateHeaderTitleText() {
+        headerText.text = "You have got \(self.tasksList.count) tasks today to complete"
     }
     
     private func setupTodoListTitle() {
