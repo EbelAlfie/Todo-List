@@ -23,6 +23,19 @@ extension UITextField {
     
     func setAsError() {
         layer.borderColor = UIColor.red.cgColor
-        layer.borderWidth = 1
+        layer.borderWidth = 3
+    }
+}
+
+extension UITextView {
+    func setAsDefaultTextField() {
+        layer.cornerRadius = 10
+        backgroundColor = Gray
+        textColor = .white
+    }
+    
+    func setAsError() {
+        layer.borderColor = UIColor.red.cgColor
+        layer.borderWidth = 3
     }
 }

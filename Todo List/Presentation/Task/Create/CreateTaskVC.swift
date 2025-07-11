@@ -8,25 +8,7 @@ class CreateTaskVC: UIViewController {
     
     weak var delegate: CreateTaskProtocol?
     
-    private lazy var titleTextField = {
-        let textField = BaseTextField()
-        textField.attributedPlaceholder = NSAttributedString(string: "Name", attributes: [
-            NSAttributedString.Key.foregroundColor: UIColor.white
-        ])
-        textField.setAsDefaultTextField()
-        textField.setPadding(newPadding: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
-        return textField
-    }()
-    
-    private lazy var descriptionTextField = {
-        let textField = BaseTextField()
-        textField.attributedPlaceholder = NSAttributedString(string: "Description", attributes: [
-            NSAttributedString.Key.foregroundColor: UIColor.white
-        ])
-        textField.setAsDefaultTextField()
-        textField.setPadding(newPadding: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
-        return textField
-    }()
+    var taskEdit: TaskModel?
     
     private lazy var scheduleLabel = {
         let label = UILabel()
@@ -35,10 +17,42 @@ class CreateTaskVC: UIViewController {
         return label
     }()
     
+    private lazy var titleTextField = {
+        let textField = BaseTextField()
+        textField.attributedPlaceholder = NSAttributedString(string: "Name", attributes: [
+            NSAttributedString.Key.foregroundColor: UIColor.white
+        ])
+        textField.setAsDefaultTextField()
+        textField.setPadding(newPadding: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
+        
+        if isEditMode() {
+            textField.text = taskEdit?.title
+        }
+        return textField
+    }()
+    
+    private lazy var descriptionTextField = {
+        let textField = BaseTextView()
+        textField.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        textField.placeholder = "Description"
+        textField.setAsDefaultTextField()
+        
+        if isEditMode() {
+            textField.text = taskEdit?.title
+        }
+        return textField
+    }()
+    
     private lazy var newTaskButton = {
         var config = UIButton.Configuration.filled()
         config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
-        config.title = "Create Task"
+        
+        config.title =  if isEditMode() {
+            "Update Task"
+        } else {
+            "Create Task"
+        }
+        
         config.baseBackgroundColor = .purple
         let button = UIButton(configuration: config)
         button.layer.cornerRadius = 20
@@ -50,35 +64,25 @@ class CreateTaskVC: UIViewController {
         super.viewDidLoad()
         let titleAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         title = "Create New Task"
-        
         if let nav = navigationController {
             nav.navigationBar.titleTextAttributes = titleAttributes
             nav.navigationBar.prefersLargeTitles = false
         }
-        
         view.backgroundColor = .black
         
         setupViews()
     }
-    
-//    init(onTaskCreated: @escaping (TaskModel) -> Void) {
-//        self.onTaskCreated = onTaskCreated
-//        super.init(nibName: nil, bundle: nil)
-//    }
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("Storyboard meresahkan!")
-    }
-    
+
     private func setupViews() {
         addView()
         setupScheduleLabel()
         setupTitleTextField()
         setupDescField()
         setupNewTaskButton()
+    }
+    
+    private func isEditMode() -> Bool {
+        return taskEdit != nil
     }
     
     @objc private func createTask() {
@@ -92,7 +96,12 @@ class CreateTaskVC: UIViewController {
             return
         }
         
-        let task = TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High)
+        let task = if isEditMode(), let task = taskEdit {
+            TaskModel(id: task.id, title: name, description: desc, priority: Priority.High)
+        } else {
+            TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High)
+        }
+         
         delegate?.onCreatedTask(task: task)
         
         navigationController?.popViewController(animated: true)
@@ -128,6 +137,8 @@ extension CreateTaskVC {
     
     private func setupDescField() {
         descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
+        let size = descriptionTextField.sizeThatFits(CGSize(width: descriptionTextField.frame.width, height: .infinity))
+        
         NSLayoutConstraint.activate([
             descriptionTextField.heightAnchor.constraint(equalToConstant: 100),
             descriptionTextField.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 10),

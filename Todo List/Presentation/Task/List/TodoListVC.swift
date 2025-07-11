@@ -18,13 +18,13 @@ class TodoListVC: UIViewController {
         return title
     }()
     
-    private lazy var seeAllButton = {
+    private lazy var addTaskButton = {
         let seeAll = UIButton()
         seeAll.setTitleColor(.purple, for: .normal)
         seeAll.setTitle("Add task", for: .normal)
         seeAll.titleLabel?.font = if let titleFont = UIFont(name: "Roboto-Regular", size: 16) { titleFont } else { seeAll.titleLabel?.font.withSize(16)
         }
-        seeAll.addTarget(self, action: #selector(goToCreateTaskVC), for: .touchUpInside)
+        seeAll.addTarget(self, action: #selector(onAddTaskClicked), for: .touchUpInside)
         return seeAll
     }()
     
@@ -34,8 +34,7 @@ class TodoListVC: UIViewController {
         tableView.register(TodoItem.self, forCellReuseIdentifier: TodoItem.identifier)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 100
-        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         return tableView
     }()
     
@@ -49,17 +48,19 @@ class TodoListVC: UIViewController {
         addAllViews()
         setupHeaderTitle()
         setupTodoListTitle()
-        setupSeeAllButton()
+        setupAddTaskButton()
         setupTodoListView()
     }
     
-    @objc private func goToCreateTaskVC() {
+    private func goToCreateTaskVC(task: TaskModel?) {
         let createTaskVc = CreateTaskVC()
+        createTaskVc.taskEdit = task
         createTaskVc.delegate = self
         navigationController?.pushViewController(createTaskVc, animated: true)
     }
 }
 
+/**Table View**/
 extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -69,25 +70,51 @@ extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TodoItem.identifier, for: indexPath)
         if let todoCell = cell as? TodoItem {
+            todoCell.callback = self
             todoCell.bindData(data: tasksList[indexPath.item])
         }
         return cell
     }
 }
 
-extension TodoListVC: CreateTaskProtocol {
+/**Table item manager**/
+extension TodoListVC: CreateTaskProtocol, TodoItemCallback {
     func onCreatedTask(task: TaskModel) {
-        self.tasksList.append(task)
+        let index: Int? = tasksList.firstIndex { item in item.id == task.id }
+        
+        if let selectedPosition = index {
+            self.tasksList[selectedPosition] = task
+        } else {
+            self.tasksList.append(task)
+        }
+        
         self.tableView.reloadData()
+    }
+    
+    func onDelete(task: TaskModel) {
+        guard let position = tasksList.firstIndex(where: { item in item.id == task.id }) else { return }
+        self.tasksList.remove(at: position)
+        self.tableView.reloadData()
+    }
+    
+    func onClicked(task: TaskModel) {
+        goToCreateTaskVC(task: task)
     }
 }
 
-//UI Manager
+/**Listeners**/
+extension TodoListVC {
+    @objc private func onAddTaskClicked() {
+        goToCreateTaskVC(task: nil)
+    }
+}
+
+/**UIKIT manager*/
 extension TodoListVC {
     private func addAllViews() {
         view.addSubview(headerText)
         view.addSubview(todayListTitle)
-        view.addSubview(seeAllButton)
+        view.addSubview(addTaskButton)
         view.addSubview(tableView)
     }
     
@@ -105,16 +132,16 @@ extension TodoListVC {
         NSLayoutConstraint.activate([
             todayListTitle.topAnchor.constraint(equalTo: headerText.bottomAnchor, constant: 30),
             todayListTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            todayListTitle.trailingAnchor.constraint(equalTo: seeAllButton.trailingAnchor, constant: -20)
+            todayListTitle.trailingAnchor.constraint(equalTo: addTaskButton.trailingAnchor, constant: -20)
         ])
     }
     
-    private func setupSeeAllButton() {
-        seeAllButton.translatesAutoresizingMaskIntoConstraints = false
+    private func setupAddTaskButton() {
+        addTaskButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            seeAllButton.topAnchor.constraint(equalTo: todayListTitle.topAnchor),
-            seeAllButton.bottomAnchor.constraint(equalTo: todayListTitle.bottomAnchor),
-            seeAllButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            addTaskButton.topAnchor.constraint(equalTo: todayListTitle.topAnchor),
+            addTaskButton.bottomAnchor.constraint(equalTo: todayListTitle.bottomAnchor),
+            addTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
 
@@ -127,5 +154,4 @@ extension TodoListVC {
             tableView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
         ])
     }
-    
 }
