@@ -32,10 +32,21 @@ class TodoItem: UITableViewCell, BaseCell {
     }()
     
     private lazy var deleteIcon = {
-        let icon = UIImage(named: "DeleteIcon")
+        let icon = UIImage(named: "DeleteIcon")?.withTintColor(.red)
         let iconView = UIButton()
         iconView.setImage(icon, for: .normal)
         return iconView
+    }()
+    
+    private lazy var doneLabel = {
+        let label = BaseLabel()
+        label.textColor = .white
+        label.backgroundColor = UIColor.systemRed
+        label.textAlignment = .center
+        label.layer.cornerRadius = 12
+        label.clipsToBounds = true
+        label.padding = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        return label
     }()
     
     required init?(coder: NSCoder) {
@@ -66,6 +77,7 @@ class TodoItem: UITableViewCell, BaseCell {
             case .Medium: UIColor(red: 215, green: 240, blue: 255, alpha: 1)
             case .Low: UIColor(red: 250, green: 217, blue: 255, alpha: 1)
         }
+        updateDoneLabel(data.isDone)
         taskName.text = data.title
         taskDescription.text = data.description
     }
@@ -87,12 +99,14 @@ extension TodoItem {
         rootView.addSubview(priorityHighlight)
         rootView.addSubview(taskName)
         rootView.addSubview(taskDescription)
+        rootView.addSubview(doneLabel)
         
         deleteIcon.translatesAutoresizingMaskIntoConstraints = false
         priorityHighlight.translatesAutoresizingMaskIntoConstraints = false
         rootView.translatesAutoresizingMaskIntoConstraints = false
         taskName.translatesAutoresizingMaskIntoConstraints = false
         taskDescription.translatesAutoresizingMaskIntoConstraints = false
+        doneLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             rootView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -103,9 +117,8 @@ extension TodoItem {
             deleteIcon.widthAnchor.constraint(equalToConstant: 26),
             deleteIcon.heightAnchor.constraint(equalToConstant: 26),
             
-            deleteIcon.trailingAnchor.constraint(equalTo: rootView.trailingAnchor),
-            deleteIcon.topAnchor.constraint(equalTo: rootView.topAnchor),
-            deleteIcon.bottomAnchor.constraint(lessThanOrEqualTo: rootView.bottomAnchor),
+            deleteIcon.trailingAnchor.constraint(equalTo: rootView.trailingAnchor, constant: -10),
+            deleteIcon.centerYAnchor.constraint(equalTo: rootView.centerYAnchor),
             
             priorityHighlight.leadingAnchor.constraint(equalTo: rootView.leadingAnchor),
             priorityHighlight.topAnchor.constraint(equalTo: rootView.topAnchor),
@@ -114,12 +127,26 @@ extension TodoItem {
             
             taskName.topAnchor.constraint(equalTo: rootView.topAnchor, constant: 15),
             taskName.leadingAnchor.constraint(equalTo: priorityHighlight.trailingAnchor, constant: 10),
-            taskName.trailingAnchor.constraint(lessThanOrEqualTo: deleteIcon.leadingAnchor),
+            taskName.trailingAnchor.constraint(equalTo: doneLabel.leadingAnchor),
             
             taskDescription.leadingAnchor.constraint(equalTo: taskName.leadingAnchor),
             taskDescription.topAnchor.constraint(equalTo: taskName.bottomAnchor, constant: 10),
             taskDescription.bottomAnchor.constraint(equalTo: rootView.bottomAnchor, constant: -15),
-            taskDescription.trailingAnchor.constraint(lessThanOrEqualTo: taskName.trailingAnchor)
+            taskDescription.trailingAnchor.constraint(lessThanOrEqualTo: taskName.trailingAnchor),
+            
+            doneLabel.leadingAnchor.constraint(equalTo: taskName.trailingAnchor),
+            doneLabel.topAnchor.constraint(equalTo: taskName.topAnchor),
+            doneLabel.bottomAnchor.constraint(equalTo: taskName.bottomAnchor),
+            doneLabel.trailingAnchor.constraint(lessThanOrEqualTo: deleteIcon.leadingAnchor, constant: -10),
         ])
+    }
+    
+    private func updateDoneLabel(_ isDone: Bool) {
+        doneLabel.text = if isDone {
+            "Done"
+        } else {
+            "Pending"
+        }
+        doneLabel.backgroundColor = if isDone { .green } else { .systemOrange }
     }
 }

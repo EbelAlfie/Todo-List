@@ -3,4 +3,5 @@ struct TaskModel {
     let title: String
     let description: String
     let priority: Priority
+    let isDone: Bool
 }

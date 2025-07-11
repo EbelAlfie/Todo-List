@@ -37,11 +37,22 @@ class CreateTaskVC: UIViewController {
         textField.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         textField.placeholder = "Description"
         textField.setAsDefaultTextField()
-        
         if isEditMode() {
             textField.text = taskEdit?.title
         }
         return textField
+    }()
+    
+    private lazy var markDoneLabel = {
+        let doneText = UILabel()
+        doneText.text = "Mark as done"
+        doneText.textColor = .white
+        return doneText
+    }()
+    
+    private lazy var doneSwitch = {
+        let toggle = UISwitch()
+        return toggle
     }()
     
     private lazy var newTaskButton = {
@@ -73,14 +84,6 @@ class CreateTaskVC: UIViewController {
         
         setupViews()
     }
-
-    private func setupViews() {
-        addView()
-        setupScheduleLabel()
-        setupTitleTextField()
-        setupDescField()
-        setupNewTaskButton()
-    }
     
     private func isEditMode() -> Bool {
         return taskEdit != nil
@@ -98,9 +101,9 @@ class CreateTaskVC: UIViewController {
         }
         
         let task = if isEditMode(), let task = taskEdit {
-            TaskModel(id: task.id, title: name, description: desc, priority: Priority.High)
+            TaskModel(id: task.id, title: name, description: desc, priority: Priority.High, isDone: doneSwitch.isOn)
         } else {
-            TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High)
+            TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High, isDone: doneSwitch.isOn)
         }
          
         delegate?.onCreatedTask(task: task)
@@ -116,11 +119,24 @@ class CreateTaskVC: UIViewController {
 
 extension CreateTaskVC {
     
+    private func setupViews() {
+        addView()
+        setupScheduleLabel()
+        setupTitleTextField()
+        setupDescField()
+        setupNewTaskButton()
+        setupDoneText()
+        setupDoneSwitch()
+    }
+    
     private func addView() {
         view.addSubview(scheduleLabel)
         view.addSubview(titleTextField)
         view.addSubview(descriptionTextField)
         view.addSubview(newTaskButton)
+        view.addSubview(doneSwitch)
+        view.addSubview(markDoneLabel)
+
     }
 
     private func setupScheduleLabel() {
@@ -156,6 +172,23 @@ extension CreateTaskVC {
             newTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             newTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             newTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
+    }
+    
+    private func setupDoneText() {
+        markDoneLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            markDoneLabel.trailingAnchor.constraint(equalTo: doneSwitch.leadingAnchor, constant: -5),
+            markDoneLabel.topAnchor.constraint(equalTo: doneSwitch.topAnchor),
+            markDoneLabel.bottomAnchor.constraint(equalTo: doneSwitch.bottomAnchor),
+        ])
+    }
+    
+    private func setupDoneSwitch() {
+        doneSwitch.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            doneSwitch.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            doneSwitch.bottomAnchor.constraint(equalTo: newTaskButton.topAnchor, constant: -10)
         ])
     }
 }

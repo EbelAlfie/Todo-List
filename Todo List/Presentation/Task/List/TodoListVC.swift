@@ -39,15 +39,12 @@ class TodoListVC: UIViewController {
         return tableView
     }()
     
-    private lazy var emptyText = {
+    private lazy var emptyContent = {
         let emptyLabel = UILabel()
         emptyLabel.text = "You have no task"
         emptyLabel.textColor = .lightGray
-        return emptyLabel
-    }()
-    
-    private lazy var emptyContent = {
-        let stackView = UIStackView(arrangedSubviews: [emptyText])
+        
+        let stackView = UIStackView(arrangedSubviews: [emptyLabel])
         stackView.alignment = .center
         stackView.axis = .vertical
         return stackView
