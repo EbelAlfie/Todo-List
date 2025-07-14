@@ -38,9 +38,28 @@ class CreateTaskVC: UIViewController {
         textField.placeholder = "Description"
         textField.setAsDefaultTextField()
         if isEditMode() {
-            textField.text = taskEdit?.title
+            textField.text = taskEdit?.description
         }
         return textField
+    }()
+    
+    private lazy var radioButtons = {
+       let radio = RadioGroup()
+        radio.setOptions(newOption: [
+            RadioModel(
+                label: Priority.Low.rawValue,
+                borderColor: setCGColor(red: 250, green: 217, blue: 255, alpha: 1)
+            ),
+            RadioModel(
+                label: Priority.Medium.rawValue,
+                borderColor: setCGColor(red: 215, green: 240, blue: 255, alpha: 1)
+            ),
+            RadioModel(
+                label: Priority.High.rawValue,
+                borderColor: setCGColor(red: 250, green: 203, blue: 186, alpha: 1)
+            )
+        ])
+        return radio
     }()
     
     private lazy var markDoneLabel = {
@@ -76,7 +95,11 @@ class CreateTaskVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let titleAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-        title = "Create New Task"
+        title = if isEditMode() {
+            "Update Your Task"
+        } else {
+            "Create New Task"
+        }
         if let nav = navigationController {
             nav.navigationBar.titleTextAttributes = titleAttributes
             nav.navigationBar.prefersLargeTitles = false
@@ -101,10 +124,12 @@ class CreateTaskVC: UIViewController {
             return
         }
         
+        let priority = Priority.getFromValue(radioButtons.selected?.label)
+        
         let task = if isEditMode(), let task = taskEdit {
-            TaskModel(id: task.id, title: name, description: desc, priority: Priority.High, isDone: doneSwitch.isOn)
+            TaskModel(id: task.id, title: name, description: desc, priority: priority, isDone: doneSwitch.isOn)
         } else {
-            TaskModel(id: UUID().uuidString, title: name, description: desc, priority: Priority.High, isDone: doneSwitch.isOn)
+            TaskModel(id: UUID().uuidString, title: name, description: desc, priority: priority, isDone: doneSwitch.isOn)
         }
          
         delegate?.onCreatedTask(task: task)
@@ -128,6 +153,7 @@ extension CreateTaskVC {
         setupNewTaskButton()
         setupDoneText()
         setupDoneSwitch()
+        setupPriorityRadio()
     }
     
     private func addView() {
@@ -137,7 +163,23 @@ extension CreateTaskVC {
         view.addSubview(newTaskButton)
         view.addSubview(doneSwitch)
         view.addSubview(markDoneLabel)
-
+    }
+    
+    private func setupPriorityRadio() {
+        let radio = radioButtons.setupView()
+        let stackView = UIStackView(arrangedSubviews: radio)
+        stackView.alignment = .center
+        stackView.axis = .horizontal
+        stackView.spacing = 5
+        stackView.distribution = .fillEqually
+        
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: descriptionTextField.bottomAnchor, constant: 20),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
     }
 
     private func setupScheduleLabel() {

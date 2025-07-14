@@ -73,9 +73,9 @@ class TodoItem: UITableViewCell, BaseCell {
         rootView.addTarget(self, action: #selector(onClick), for: .touchUpInside)
         
         priorityHighlight.backgroundColor = switch(data.priority) {
-            case .High: UIColor(red: 250, green: 203, blue: 186, alpha: 1)
-            case .Medium: UIColor(red: 215, green: 240, blue: 255, alpha: 1)
-            case .Low: UIColor(red: 250, green: 217, blue: 255, alpha: 1)
+            case .High: setColor(red: 250, green: 203, blue: 186, alpha: 1)
+            case .Medium: setColor(red: 215, green: 240, blue: 255, alpha: 1)
+            case .Low: setColor(red: 250, green: 217, blue: 255, alpha: 1)
         }
         updateDoneLabel(data.isDone)
         taskName.text = data.title
