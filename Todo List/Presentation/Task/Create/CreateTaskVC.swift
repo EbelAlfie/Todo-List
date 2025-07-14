@@ -34,7 +34,7 @@ class CreateTaskVC: UIViewController {
     
     private lazy var descriptionTextField = {
         let textField = BaseTextView()
-        textField.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        textField.contentInset = UIEdgeInsets(top: 5, left: 12, bottom: 12, right: 12)
         textField.placeholder = "Description"
         textField.setAsDefaultTextField()
         if isEditMode() {
@@ -52,6 +52,7 @@ class CreateTaskVC: UIViewController {
     
     private lazy var doneSwitch = {
         let toggle = UISwitch()
+        toggle.setOn(taskEdit?.isDone ?? false, animated: true)
         return toggle
     }()
     
