@@ -34,7 +34,6 @@ class TodoListVC: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .black
         tableView.register(TodoItem.self, forCellReuseIdentifier: TodoItem.identifier)
-        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -74,7 +73,7 @@ class TodoListVC: UIViewController {
 }
 
 /**Table View**/
-extension TodoListVC: UITableViewDataSource, UITableViewDelegate {
+extension TodoListVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tasksList.count
@@ -119,15 +118,15 @@ extension TodoListVC: CreateTaskProtocol, TodoItemCallback {
 }
 
 /**Listeners**/
-extension TodoListVC {
-    @objc private func onAddTaskClicked() {
+private extension TodoListVC {
+    @objc func onAddTaskClicked() {
         goToCreateTaskVC(task: nil)
     }
 }
 
 /**UIKIT manager*/
-extension TodoListVC {
-    private func addAllViews() {
+private extension TodoListVC {
+    func addAllViews() {
         view.addSubview(headerText)
         view.addSubview(todayListTitle)
         view.addSubview(addTaskButton)
@@ -135,21 +134,21 @@ extension TodoListVC {
         view.addSubview(emptyContent) //Harusnya ga boleh
     }
     
-    private func updateView() {
+    func updateView() {
         updateHeaderTitleText()
         updateItemState()
     }
     
-    private func updateHeaderTitleText() {
+    func updateHeaderTitleText() {
         headerText.text = "You have got \(self.tasksList.count) tasks today to complete"
     }
     
-    private func updateItemState() {
+    func updateItemState() {
         emptyContent.isHidden = tasksList.count > 0
         tableView.isHidden = tasksList.count <= 0
     }
     
-    private func setupHeaderTitle() {
+    func setupHeaderTitle() {
         headerText.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             headerText.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
@@ -158,7 +157,7 @@ extension TodoListVC {
         ])
     }
         
-    private func setupTodoListTitle() {
+    func setupTodoListTitle() {
         todayListTitle.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             todayListTitle.topAnchor.constraint(equalTo: headerText.bottomAnchor, constant: 30),
@@ -167,7 +166,7 @@ extension TodoListVC {
         ])
     }
     
-    private func setupAddTaskButton() {
+    func setupAddTaskButton() {
         addTaskButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             addTaskButton.topAnchor.constraint(equalTo: todayListTitle.topAnchor),
@@ -176,7 +175,7 @@ extension TodoListVC {
         ])
     }
 
-    private func setupTodoListView() {
+    func setupTodoListView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: todayListTitle.bottomAnchor, constant: 12),
@@ -186,7 +185,7 @@ extension TodoListVC {
         ])
     }
     
-    private func setupEmptyContent() {
+    func setupEmptyContent() {
         emptyContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             emptyContent.centerXAnchor.constraint(equalTo: view.centerXAnchor),
