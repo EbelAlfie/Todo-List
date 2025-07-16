@@ -131,7 +131,7 @@ private extension TodoListVC {
         view.addSubview(todayListTitle)
         view.addSubview(addTaskButton)
         view.addSubview(tableView)
-        view.addSubview(emptyContent) //Harusnya ga boleh
+        view.addSubview(emptyContent)
     }
     
     func updateView() {
